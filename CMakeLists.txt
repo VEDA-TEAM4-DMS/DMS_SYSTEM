@@ -33,3 +33,4 @@ target_link_libraries(osrm_app
     z
     gdal
 )
+    
