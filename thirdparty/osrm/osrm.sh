@@ -1,1 +1,1 @@
-sudo docker run -t -i -p 5000:5000 -v "${PWD}:/data" ghcr.io/project-osrm/osrm-backend osrm-routed --algorithm mld /data/south-korea-latest.osrm
+LD_LIBRARY_PATH=./lib ./osrm-routed --algorithm=MLD ./data/south-korea-latest.osrm

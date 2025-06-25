@@ -108,7 +108,7 @@ double OSRM::distance(double lat1, double lon1, double lat2, double lon2, double
 }
 
 // 위치 정보와 방향을 기반으로 경로 정보를 불러옴
-void OSRM::getTurnInfo(double lon, double lat , double brng) {
+void OSRM::getTurnInfo(double lon, double lat , double brng, TurnInfo* turninfos, size_t &i) {
     std::ostringstream url;
     url << OSRM_URL << "route/v1/driving/"
         << lon << "," << lat << ";" << rest.lon << "," << rest.lat
@@ -146,7 +146,27 @@ void OSRM::getTurnInfo(double lon, double lat , double brng) {
             double distance = step["distance"];
 
             if (type == "depart" || type == "arrive") continue;
-
+            if (i >= 4) {
+                break; // 최대 4개의 턴 정보만 저장
+            }
+            turninfos[i] = TurnInfo{
+                "",
+                (modifier == "left") ? modifier::Left :
+                (modifier == "right") ? modifier::Right :
+                (modifier == "slight left") ? modifier::Slight_left :
+                (modifier == "slight right") ? modifier::Slight_right :
+                (modifier == "uturn") ? modifier::UTurn : modifier::Straight,
+                distance
+            };
+            strncpy(turninfos[i].road, road.c_str(), sizeof(turninfos[i].road) - 1);
+            turninfos[i].road[sizeof(turninfos[i].road) - 1] = '\0'; // 문자열 종료 보장
+            turninfos[i].mod = (modifier == "left") ? modifier::Left :
+                (modifier == "right") ? modifier::Right :
+                (modifier == "slight left") ? modifier::Slight_left :
+                (modifier == "slight right") ? modifier::Slight_right :
+                (modifier == "uturn") ? modifier::UTurn : modifier::Straight;
+            turninfos[i].distance = distance;
+            i++;
             std::cout << "  - " << distance << "m 앞에서 " << road << " 방향으로 " << modifier << " 회전\n";
         }
     } catch (const std::exception& e) {
@@ -226,36 +246,4 @@ void OSRM::destroyKDTree(KDNode *node) {
     destroyKDTree(node->left);
     destroyKDTree(node->right);
     delete node;
-}
-
-#include <osrm/osrm.hpp>
-#include <osrm/engine_config.hpp>
-#include <osrm/route_parameters.hpp>
-#include <osrm/json_container.hpp>
-
-int main() {
-    // 시청역 (126.9784, 37.5665)
-    osrm::EngineConfig config;
-    config.storage_config = osrm::storage::StorageConfig("../third_party/data/south-korea-latest.osrm");
-    config.algorithm = osrm::EngineConfig::Algorithm::CH; // Contraction Hierarchies
-    osrm::OSRM osrm(config);
-    osrm::RouteParameters params;
-    params.coordinates.push_back({osrm::util::FloatLongitude{13.388860}, osrm::util::FloatLatitude{52.517037}}); // 시작점
-    params.coordinates.push_back({osrm::util::FloatLongitude{13.397634}, osrm::util::FloatLatitude{52.529407}}); // 도착점
-    params.steps = true;
-
-    osrm::json::Object result;
-    const auto status = osrm.Route(params, result);
-
-    if (status == osrm::Status::Ok) {
-        std::cout << osrm::json::Value(result) << std::endl;
-    } else {
-        std::cerr << "Route request failed." << std::endl;
-    }
-    /*std::unique_ptr<OSRM> osrm = std::make_unique<OSRM>(); 
-    // OSRM* osrm = new OSRM(); // OSRM 객체 생성
-    double bearing = 90.0; // 예시로 90도 방향
-    osrm->init(127.4451, 37.6489, bearing); 
-    osrm->getTurnInfo(126.9784, 37.5665, bearing);
-    return 0;*/
 }

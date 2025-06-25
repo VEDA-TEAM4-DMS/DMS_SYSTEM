@@ -8,14 +8,16 @@
 #include <queue>
 #include <curl/curl.h>
 #include "json.hpp"  // nlohmann::json 
+#include "common.h"
 
 #define OSRM_URL "http://localhost:5000/"
-#define DATA_PATH "../data"
+#define DATA_PATH "../res"
 #define REST_CSV_FILE DATA_PATH "/rest.csv"
 #define REST_CSV_FILE2 DATA_PATH "/rest_area.csv"
 #define kEarthRadius 6371.0
 #define kRestSearchCount 10
 #define BEARING_RANGE ",30;" // 방향 허용 범위
+
 
 // 휴게소 정보를 저장하는 구조체
 struct RestArea {
@@ -42,7 +44,9 @@ public:
     ~OSRM();
     void init(double lon, double lat, double brng);
     double distance(double lat1, double lon1, double lat2, double lon2, double brng);
-    void getTurnInfo(double lon, double lat, double brng);
+    void getTurnInfo(double lon, double lat, double brng, TurnInfo *turninfos, size_t &i);
+    // 두 지점 사이의 유클리드 거리 계산
+    double haversine(double lat1, double lon1, double lat2, double lon2);
 
 private:
     static size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::string* output) {
@@ -54,8 +58,6 @@ private:
     KDNode* buildKDTree(std::vector<RestArea>& areas, int depth = 0);
     void kNearestSearch(KDNode* node, double targetLat, double targetLon, int depth,
                     std::priority_queue<std::pair<double, RestArea>>& maxHeap, int k);
-    // 두 지점 사이의 유클리드 거리 계산
-    double haversine(double lat1, double lon1, double lat2, double lon2);
     void destroyKDTree(KDNode* node);
     double lon;
     double lat;
