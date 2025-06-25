@@ -10,7 +10,7 @@
 #include "json.hpp"  // nlohmann::json 
 
 #define OSRM_URL "http://localhost:5000/"
-#define DATA_PATH "../data"
+#define DATA_PATH "../res"
 #define REST_CSV_FILE DATA_PATH "/rest.csv"
 #define REST_CSV_FILE2 DATA_PATH "/rest_area.csv"
 #define kEarthRadius 6371.0

@@ -228,35 +228,13 @@ void OSRM::destroyKDTree(KDNode *node) {
     delete node;
 }
 
-#include <osrm/osrm.hpp>
-#include <osrm/engine_config.hpp>
-#include <osrm/route_parameters.hpp>
-#include <osrm/json_container.hpp>
 
 
 int main() {
     // 시청역 (126.9784, 37.5665)
-    osrm::EngineConfig config;
-    config.storage_config = osrm::storage::StorageConfig("../third_party/data/south-korea-latest.osrm");
-    config.algorithm = osrm::EngineConfig::Algorithm::CH; // Contraction Hierarchies
-    osrm::OSRM osrm(config);
-    osrm::RouteParameters params;
-    params.coordinates.push_back({osrm::util::FloatLongitude{13.388860}, osrm::util::FloatLatitude{52.517037}}); // 시작점
-    params.coordinates.push_back({osrm::util::FloatLongitude{13.397634}, osrm::util::FloatLatitude{52.529407}}); // 도착점
-    params.steps = true;
-
-    osrm::json::Object result;
-    const auto status = osrm.Route(params, result);
-
-    if (status == osrm::Status::Ok) {
-        std::cout << osrm::json::Value(result) << std::endl;
-    } else {
-        std::cerr << "Route request failed." << std::endl;
-    }
-    /*std::unique_ptr<OSRM> osrm = std::make_unique<OSRM>(); 
-    // OSRM* osrm = new OSRM(); // OSRM 객체 생성
+    OSRM* osrm = new OSRM(); // OSRM 객체 생성
     double bearing = 90.0; // 예시로 90도 방향
     osrm->init(127.4451, 37.6489, bearing); 
     osrm->getTurnInfo(126.9784, 37.5665, bearing);
-    return 0;*/
+    return 0;
 }
