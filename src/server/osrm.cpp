@@ -145,7 +145,9 @@ void OSRM::getTurnInfo(double lon, double lat , double brng, TurnInfo* turninfos
             std::string type = step["maneuver"]["type"];
             double distance = step["distance"];
 
-            if (type == "depart" || type == "arrive") continue;
+            if (type == "arrive") continue;
+
+            //if (type == "depart" || type == "arrive") continue;
             if (i >= 4) {
                 break; // 최대 4개의 턴 정보만 저장
             }

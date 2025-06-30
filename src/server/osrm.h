@@ -7,8 +7,8 @@
 #include <cmath>
 #include <queue>
 #include <curl/curl.h>
-#include "json.hpp"  // nlohmann::json 
-#include "common.h"
+#include "../json.hpp"  // nlohmann::json 
+#include "../common.h"
 
 #define OSRM_URL "http://localhost:5000/"
 #define DATA_PATH "../res"

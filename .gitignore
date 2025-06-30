@@ -3,3 +3,6 @@ build/
 thirdparty/osrm/data/
 .*/
 res/
+src/CMakeLists.txt.user
+test1/
+!thirdparty/piper/build
