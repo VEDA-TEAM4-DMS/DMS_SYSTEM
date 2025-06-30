@@ -1,0 +1,1 @@
+cmd_/home/junghwalee/project/DMS_SYSTEM/driver/led/dms_led.ko := ld -r -EL  -maarch64elf -z noexecstack --build-id=sha1  -T scripts/module.lds -o /home/junghwalee/project/DMS_SYSTEM/driver/led/dms_led.ko /home/junghwalee/project/DMS_SYSTEM/driver/led/dms_led.o /home/junghwalee/project/DMS_SYSTEM/driver/led/dms_led.mod.o;  true
